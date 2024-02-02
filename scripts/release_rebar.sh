@@ -91,18 +91,18 @@ function rebar_csv {
   fi
 
   # Remove existing build for this elixir version
-  cat ${1}-1.x-old.csv | grep -v ",${3}\$" > ${1}-1.x.csv
-  rm ${1}-1.x-old.csv
+  cat "${1}"-1.x-old.csv | grep -v ",${3}\$" > "${1}"-1.x.csv
+  rm "${1}"-1.x-old.csv
 
   # Add new build
   sha=$(shasum -a 512 "${1}")
   sha=($sha)
-  echo "${2},${sha},${3}" >> ${1}-1.x.csv
+  echo "${2},${sha},${3}" >> "${1}"-1.x.csv
 }
 
 # $1 = rebar name
 function sign_csv {
-  openssl dgst -sha512 -sign "${ELIXIR_PEM}" "${1}-1.x.csv" | openssl base64 > ${1}-1.x.csv.signed
+  openssl dgst -sha512 -sign "${ELIXIR_PEM}" "${1}-1.x.csv" | openssl base64 > "${1}"-1.x.csv.signed
 }
 
 # $1 = source
@@ -131,7 +131,7 @@ function upload_rebar {
 function build_rebar2 {
   docker rm rebar2 || true
 
-  docker run --name rebar2 hexpm/erlang:$2-ubuntu-$3 sh -c "\
+  docker run --name rebar2 hexpm/erlang:"$2"-ubuntu-"$3" sh -c "\
     apt update && apt -y install git && \
     git clone https://github.com/rebar/rebar.git -b $1 && \
     cd rebar && \
@@ -147,7 +147,7 @@ function build_rebar2 {
 function build_rebar3 {
   docker rm rebar3 || true
 
-  docker run --name rebar3 hexpm/erlang:$2-ubuntu-$3 sh -c "\
+  docker run --name rebar3 hexpm/erlang:"$2"-ubuntu-"$3" sh -c "\
     apt update && apt -y install git && \
     git clone https://github.com/erlang/rebar3.git -b $1 && \
     cd rebar3 && \
