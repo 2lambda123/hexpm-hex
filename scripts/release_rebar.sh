@@ -22,9 +22,9 @@ function main {
   elixir_version="1.0.0"
   otp_version="17.5.6.10"
   ubuntu_version="xenial-20200326"
-  build_rebar3 "${rebar_version}" "${otp_version}" "${ubuntu_version}"
-  rebar_csv rebar3 "${rebar_version}" "${elixir_version}"
-  upload_rebar rebar3 "${rebar_version}" "${elixir_version}"
+  build_rebar3 "$rebar_version" "$otp_version" "$ubuntu_version"
+  rebar_csv rebar3 "$rebar_version" "$elixir_version"
+  upload_rebar rebar3 "$rebar_version" "$elixir_version"
 
   # For Elixir 1.11.4 / rebar 3.15.2
   rebar_name="rebar3"
@@ -32,9 +32,9 @@ function main {
   elixir_version="1.11.4"
   otp_version="21.3.8.21"
   ubuntu_version="xenial-20201014"
-  build_rebar3 "${rebar_version}" "${otp_version}" "${ubuntu_version}"
-  rebar_csv rebar3 "${rebar_version}" "${elixir_version}"
-  upload_rebar rebar3 "${rebar_version}" "${elixir_version}"
+  build_rebar3 "$rebar_version" "$otp_version" "$ubuntu_version"
+  rebar_csv rebar3 "$rebar_version" "$elixir_version"
+  upload_rebar rebar3 "$rebar_version" "$elixir_version"
 
   # For Elixir 1.13.0 / rebar 3.15.2
   rebar_name="rebar3"
@@ -42,9 +42,9 @@ function main {
   elixir_version="1.13.0"
   otp_version="22.3.4.22"
   ubuntu_version="xenial-20210114"
-  build_rebar3 "${rebar_version}" "${otp_version}" "${ubuntu_version}"
-  rebar_csv rebar3 "${rebar_version}" "${elixir_version}"
-  upload_rebar rebar3 "${rebar_version}" "${elixir_version}"
+  build_rebar3 "$rebar_version" "$otp_version" "$ubuntu_version"
+  rebar_csv rebar3 "$rebar_version" "$elixir_version"
+  upload_rebar rebar3 "$rebar_version" "$elixir_version"
 
   # For Elixir 1.14.5 / rebar 3.22.0
   rebar_name="rebar3"
@@ -52,9 +52,9 @@ function main {
   elixir_version="1.14.5"
   otp_version="23.3.4.18"
   ubuntu_version="xenial-20210804"
-  build_rebar3 "${rebar_version}" "${otp_version}" "${ubuntu_version}"
-  rebar_csv rebar3 "${rebar_version}" "${elixir_version}"
-  upload_rebar rebar3 "${rebar_version}" "${elixir_version}"
+  build_rebar3 "$rebar_version" "$otp_version" "$ubuntu_version"
+  rebar_csv rebar3 "$rebar_version" "$elixir_version"
+  upload_rebar rebar3 "$rebar_version" "$elixir_version"
 
   # For Elixir 1.15.0-rc.0 / rebar 3.22.0
   rebar_name="rebar3"
@@ -62,16 +62,16 @@ function main {
   elixir_version="1.15.0-rc.0"
   otp_version="24.3.4.11"
   ubuntu_version="xenial-20210804"
-  build_rebar3 "${rebar_version}" "${otp_version}" "${ubuntu_version}"
-  rebar_csv rebar3 "${rebar_version}" "${elixir_version}"
-  upload_rebar rebar3 "${rebar_version}" "${elixir_version}"
+  build_rebar3 "$rebar_version" "$otp_version" "$ubuntu_version"
+  rebar_csv rebar3 "$rebar_version" "$elixir_version"
+  upload_rebar rebar3 "$rebar_version" "$elixir_version"
 
   sign_csv rebar3
   s3up "rebar3-1.x.csv" "rebar3-1.x.csv"
   s3up "rebar3-1.x.csv.signed" "rebar3-1.x.csv.signed"
 
-  purge_key "${HEX_FASTLY_REPO_SERVICE_ID}" "installs"
-  purge_key "${HEX_FASTLY_BUILDS_SERVICE_ID}" "installs"
+  purge_key "$HEX_FASTLY_REPO_SERVICE_ID" "installs"
+  purge_key "$HEX_FASTLY_BUILDS_SERVICE_ID" "installs"
 
   # build_rebar2 "${rebar_version}" "${otp_version}" "${ubuntu_version}"
   # rebar_csv rebar2 "${rebar_version}" "${elixir_version}"
@@ -96,13 +96,13 @@ function rebar_csv {
 
   # Add new build
   sha=$(shasum -a 512 "${1}")
-  sha=($sha)
-  echo "${2},${sha},${3}" >> "${1}"-1.x.csv
+  sha=("$sha")
+  echo "${2},$sha,${3}" >> "${1}"-1.x.csv
 }
 
 # $1 = rebar name
 function sign_csv {
-  openssl dgst -sha512 -sign "${ELIXIR_PEM}" "${1}-1.x.csv" | openssl base64 > "${1}"-1.x.csv.signed
+  openssl dgst -sha512 -sign "$ELIXIR_PEM" "${1}-1.x.csv" | openssl base64 > "${1}"-1.x.csv.signed
 }
 
 # $1 = source
@@ -163,7 +163,7 @@ function purge_key() {
   curl \
     --fail \
     -X POST \
-    -H "Fastly-Key: ${HEX_FASTLY_KEY}" \
+    -H "Fastly-Key: $HEX_FASTLY_KEY" \
     -H "Accept: application/json" \
     -H "Content-Length: 0" \
     "https://api.fastly.com/service/$1/purge/$2"
