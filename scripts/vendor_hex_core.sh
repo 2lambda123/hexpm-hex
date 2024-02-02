@@ -52,9 +52,9 @@ for filename in "$filenames"; do
   source_path=$source_dir/$filename
   target_path=$target_dir/$prefix$filename
 
-  echo "%% Vendored from hex_core v$version ($shortref), do not edit manually" > "$target_path"
-  echo >> "$target_path"
-  cat "$source_path" >> "$target_path"
+  echo "%% Vendored from hex_core v$version ($shortref), do not edit manually" >"$target_path"
+  echo >>"$target_path"
+  cat "$source_path" >>"$target_path"
 
   for word in "$search_to_replace"; do
     sed -i.bak s/"$word"/"$prefix$word"/g "$target_path"
